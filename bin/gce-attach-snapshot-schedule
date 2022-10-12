@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# This script tries to compose a command for attaching a snapshot schedule to the SQL replica disk
+
+PVC="data-sql-mariadb-secondary-0"
+
+CONTEXT=$(kubectl config current-context)
+CLUSTER=$(echo $CONTEXT | awk -F '_' '{print $NF}')
+
+SNAPSHOT_POLICY=$(gcloud compute resource-policies list --filter="$CLUSTER" --format='value(name)')
+
+PV=$(kubectl get pvc ${PVC} -o jsonpath="{.spec.volumeName}")
+
+# matches metadata of disks provisioned via bitnami mariadb chart
+DISK=$(kubectl get pv ${PV} -o jsonpath="{.spec.csi.volumeHandle}" | awk -F '/' '{print $NF}')
+
+# if the $DISK is empty, check if it was provisioned by terraform
+if [[ -z "$DISK" ]]; then
+    DISK=$(kubectl get pv ${PV} -o jsonpath="{.spec.gcePersistentDisk.pdName}")
+fi
+
+LOCATION=$(gcloud compute disks list --filter="name=('${DISK}')" --format='value(location())')
+
+echo "context: '${CONTEXT}'"
+echo "cluster: '${CLUSTER}'"
+echo "disk:    '${DISK}' (located in '${LOCATION}')"
+echo "policy:  '${SNAPSHOT_POLICY}'"
+echo
+echo "> gcloud compute disks add-resource-policies ${DISK} --zone=${LOCATION} --resource-policies=${SNAPSHOT_POLICY}"
+echo

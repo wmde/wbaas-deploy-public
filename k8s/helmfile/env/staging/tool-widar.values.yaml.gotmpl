@@ -1,0 +1,22 @@
+replicaCount: 1
+
+platform:
+  mediawikiBackendHost: mediawiki-137-fp-app-backend.default.svc.cluster.local
+php:
+  sessionSaveHandler: redis
+  sessionSavePath:
+  sessionSaveRedisHost: {{ .Values.services.redis.writeHost }}
+  sessionSaveRedisPort: {{ .Values.services.redis.port }}
+  sessionSaveRedisDatabase: {{ .Values.services.redis.databases.toolWidar }}
+  sessionSaveRedisAuth:
+  sessionSaveRedisAuthSecretName: redis-password
+  sessionSaveRedisAuthSecretKey: password
+  sessionSaveRedisPrefix: "session_widar_"
+
+resources:
+  requests:
+    cpu: 1m
+    memory: 18Mi
+  limits:
+    cpu: 30m
+    memory: 50Mi

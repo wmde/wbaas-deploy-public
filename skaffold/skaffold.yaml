@@ -1,0 +1,377 @@
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/ui
+          context: ./../../ui
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: ui
+            chartPath: ./../../charts/charts/ui
+            valuesFiles:
+              - ".tmp.values.ui.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/ui
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "ui", "-n" ]
+metadata:
+  name: ui
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/mediawiki
+          context: ./../../mediawiki
+          docker:
+            buildArgs:
+              LOCALIZATION_CACHE_THREAD_COUNT: 4
+              LOCALIZATION_CACHE_ADDITIONAL_PARAMS: "--lang=en,sv,de"
+              INSTALL_PROFILING_DEPS: 1
+              INSTALL_XDEBUG: 1
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: mediawiki-137-fp
+            chartPath: ./../../charts/charts/mediawiki
+            valuesFiles:
+              - ".tmp.values.mediawiki-137-fp.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/mediawiki
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "mediawiki-137-fp", "-n" ]
+metadata:
+  name: mediawiki-137-fp
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/api
+          context: ./../../api
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: api
+            chartPath: ./../../charts/charts/api
+            valuesFiles:
+              - ".tmp.values.api.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/api
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "api", "-n" ]
+metadata:
+  name: api
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/queryservice-gateway
+          context: ./../../queryservice-gateway
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: queryservice-gateway
+            chartPath: ./../../charts/charts/queryservice-gateway
+            valuesFiles:
+              - ".tmp.values.queryservice-gateway.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/queryservice-gateway
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "queryservice-gateway", "-n" ]
+metadata:
+  name: queryservice-gateway
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/queryservice-ui
+          context: ./../../queryservice-ui
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: queryservice-ui
+            chartPath: ./../../charts/charts/queryservice-ui
+            valuesFiles:
+              - ".tmp.values.queryservice-ui.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/queryservice-ui
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "queryservice-ui", "-n" ]
+metadata:
+  name: queryservice-ui
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/queryservice
+          context: ./../../queryservice
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: queryservice
+            chartPath: ./../../charts/charts/queryservice
+            valuesFiles:
+              - ".tmp.values.queryservice.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/queryservice
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "queryservice", "-n" ]
+metadata:
+  name: queryservice
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/queryservice-updater
+          context: ./../../queryservice-updater
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: queryservice-updater
+            chartPath: ./../../charts/charts/queryservice-updater
+            valuesFiles:
+              - ".tmp.values.queryservice-updater.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/queryservice-updater
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "queryservice-updater", "-n" ]
+metadata:
+  name: queryservice-updater
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/tool-cradle
+          context: ./../../cradle
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: tool-cradle
+            chartPath: ./../../charts/charts/tool-cradle
+            valuesFiles:
+              - ".tmp.values.tool-cradle.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/tool-cradle
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "tool-cradle", "-n" ]
+metadata:
+  name: tool-cradle
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/tool-widar
+          context: ./../../widar
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: tool-widar
+            chartPath: ./../../charts/charts/tool-widar
+            valuesFiles:
+              - ".tmp.values.tool-widar.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/tool-widar
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "tool-widar", "-n" ]
+metadata:
+  name: tool-widar
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/tool-quickstatements
+          context: ./../../quickstatements
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: tool-quickstatements
+            chartPath: ./../../charts/charts/tool-quickstatements
+            valuesFiles:
+              - ".tmp.values.tool-quickstatements.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/tool-quickstatements
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "tool-quickstatements", "-n" ]
+metadata:
+  name: tool-quickstatements
+
+---
+
+apiVersion: skaffold/v2beta23
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube-wbaas
+    build:
+      artifacts:
+        - image: local/skaffold/wbaas/wbaas-backup
+          context: ./../../wbaas-backup
+      local:
+        useDockerCLI: true
+    deploy:
+      kubeContext: minikube-wbaas
+      helm:
+        releases:
+          - name: wbaas-backup
+            chartPath: ./../../charts/charts/wbaas-backup
+            valuesFiles:
+              - ".tmp.values.wbaas-backup.yaml"
+              - NeverPull.yaml
+            artifactOverrides:
+              image: local/skaffold/wbaas/wbaas-backup
+            imageStrategy:
+              helm: {}
+        hooks:
+          before:
+            - host:
+                command: [ "./helmfile-values", "-e", "local", "-r", "wbaas-backup", "-n" ]
+metadata:
+  name: wbaas-backup
